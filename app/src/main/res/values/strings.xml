@@ -1,0 +1,45 @@
+<resources>
+    <string name="app_name">Product Memo</string>
+
+    <!-- LoginActivity -->
+    <string name="prompt_email">Input Email</string>
+    <string name="prompt_password">Input password</string>
+    <string name="action_sign_in">Login</string>
+    <string name="action_register_account">Register</string>
+    <string name="action_forgot_password">Forget password</string>
+    <string name="error_invalid_email">Invalid Email</string>
+    <string name="error_account_not_exist">Account doesn\'t exist</string>
+    <string name="error_account_exist">Account has existed</string>
+    <string name="error_incorrect_password">Email or password is incorrect</string>
+
+    <string name="prompt_error">Error</string>
+    <string name="prompt_register_ok">Register OK</string>
+
+    <!-- SearchActivity -->
+    <string name="search_product">Search Product</string>
+    <string name="scan_barcode">Scan barcode</string>
+    <string name="error_without_barcode">Please scan or input a barcode</string>
+    <string name="browsing_history">Recent browsing history</string>
+
+    <!-- ScanBarCodeActivity  ProductRecordActivity &  ModifyRecordActivity -->
+    <string name="product_info">Product information</string>
+    <string name="modify_product_info">Edit product information</string>
+
+    <string name="cancel">Cancel</string>
+    <string name="edit">Edit</string>
+    <string name="close">Close</string>
+    <string name="delete_record">Delete</string>
+    <string name="confirm">Confirm</string>
+    <string name="search">Search</string>
+
+    <string name="product_barcode">Bar code</string>
+    <string name="product_name">Name</string>
+    <string name="product_category">Category</string>
+    <string name="product_cost">Cost</string>
+    <string name="product_price">Price</string>
+    <string name="product_vendor">Vendor</string>
+
+    <string name="error_db">Database error</string>
+
+
+</resources>

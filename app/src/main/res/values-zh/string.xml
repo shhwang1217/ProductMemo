@@ -1,0 +1,43 @@
+<resources>
+    <string name="app_name">商品管理</string>
+
+    <!-- LoginActivity -->
+    <string name="prompt_email">請輸入 Email</string>
+    <string name="prompt_password">請輸入密碼</string>
+    <string name="action_sign_in">登入</string>
+    <string name="action_register_account">註冊</string>
+    <string name="action_forgot_password">忘記密碼</string>
+    <string name="error_invalid_email">無效的 Email 格式</string>
+    <string name="error_account_not_exist">帳號不存在</string>
+    <string name="error_account_exist">帳號已經存在</string>
+    <string name="error_incorrect_password">密碼不正確</string>
+
+    <string name="prompt_error">錯誤</string>
+    <string name="prompt_register_ok">註冊成功</string>
+
+    <!-- SearchActivity -->
+    <string name="search_product">搜尋商品</string>
+    <string name="scan_barcode">掃描條碼</string>
+    <string name="error_without_barcode">請掃描或輸入一個條碼</string>
+    <string name="browsing_history">最近的瀏覽記錄</string>
+
+    <!-- ScanBarCodeActivity  ProductRecordActivity &  ModifyRecordActivity -->
+    <string name="product_info">商品資訊</string>
+    <string name="modify_product_info">編輯商品資訊</string>
+
+    <string name="cancel">取消</string>
+    <string name="edit">編輯</string>
+    <string name="close">關閉</string>
+    <string name="delete_record">刪除</string>
+    <string name="confirm">確定</string>
+    <string name="search">搜尋</string>
+
+    <string name="product_barcode">條碼</string>
+    <string name="product_name">名稱</string>
+    <string name="product_category">分類</string>
+    <string name="product_cost">成本</string>
+    <string name="product_price">售價</string>
+    <string name="product_vendor">供應商</string>
+
+    <string name="error_db">資料庫錯誤</string>
+</resources>
