@@ -3,7 +3,14 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
-    <dimen name="textview_height">25dp</dimen>
-    <dimen name="font_size">20dp</dimen>
+    <dimen name="textview_title_padding">4dp</dimen>
+    <dimen name="textview_margin">8dp</dimen>
+    <dimen name="textview_height">30dp</dimen>
+    <dimen name="textview_font_size">20dp</dimen>
+
+    <dimen name="img_large_size"> 256dp</dimen>
+    <dimen name="img_small_size"> 32dp</dimen>
+
+    <dimen name="btn_margin"> 10dp</dimen>
 
 </resources>
