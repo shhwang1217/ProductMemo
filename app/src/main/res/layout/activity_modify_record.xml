@@ -1,144 +1,130 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:orientation="vertical"
     tools:context=".ModifyRecordActivity">
-
-    <Button
-        android:id="@+id/btnConfirm"
-        android:layout_width="86dp"
-        android:layout_height="43dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="28dp"
-        android:text="@string/confirm"
-        app:layout_constraintStart_toEndOf="@+id/imgBtnSnapshot"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/btnCancel"
-        android:layout_width="86dp"
-        android:layout_height="45dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="40dp"
-        android:text="@string/cancel"
-        app:layout_constraintStart_toEndOf="@+id/imgBtnSnapshot"
-        app:layout_constraintTop_toBottomOf="@+id/btnConfirm" />
 
     <TextView
         android:id="@+id/textView4"
-        android:layout_width="144dp"
-        android:layout_height="21dp"
-        android:layout_marginStart="112dp"
-        android:layout_marginLeft="112dp"
-        android:layout_marginTop="4dp"
-        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
         android:text="@string/product_info"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:textSize="@dimen/textview_font_size" />
 
-    <ImageButton
-        android:id="@+id/imgBtnSnapshot"
-        android:layout_width="253dp"
-        android:layout_height="256dp"
-        android:layout_marginTop="4dp"
-        android:adjustViewBounds="true"
-        android:scaleType="fitCenter"
-        android:src="@drawable/title_pic"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView4" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/textView8"
-        android:layout_width="81dp"
-        android:layout_height="27dp"
-        android:layout_margin="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:text="@string/product_barcode"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imgBtnSnapshot" />
+        <ImageButton
+            android:id="@+id/imgBtnSnapshot"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/img_large_size"
+            android:adjustViewBounds="false"
+            android:scaleType="center"
+            android:src="@drawable/unknown_product" />
 
-    <TextView
-        android:id="@+id/txtBarcode"
-        android:layout_width="273dp"
-        android:layout_height="32dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintStart_toEndOf="@+id/textView8"
-        app:layout_constraintTop_toBottomOf="@+id/imgBtnSnapshot" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/textView9"
-        android:layout_width="81dp"
-        android:layout_height="27dp"
-        android:layout_margin="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="36dp"
-        android:text="@string/product_name"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView8" />
+            <Button
+                android:id="@+id/btnConfirm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/btn_margin"
+                android:text="@string/confirm" />
 
-    <EditText
-        android:id="@+id/etName"
-        android:layout_width="273dp"
-        android:layout_height="32dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:inputType="text"
-        app:layout_constraintStart_toEndOf="@+id/textView9"
-        app:layout_constraintTop_toBottomOf="@+id/textView8" />
+            <Button
+                android:id="@+id/btnCancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/btn_margin"
+                android:text="@string/cancel" />
 
-    <TextView
-        android:id="@+id/textView12"
-        android:layout_width="81dp"
-        android:layout_height="27dp"
-        android:layout_margin="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="64dp"
-        android:text="@string/product_price"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView9" />
+        </LinearLayout>
 
-    <EditText
-        android:id="@+id/etPrice"
-        android:layout_width="138dp"
-        android:layout_height="29dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:inputType="numberDecimal"
-        app:layout_constraintStart_toEndOf="@+id/textView12"
-        app:layout_constraintTop_toBottomOf="@+id/textView12" />
+    </LinearLayout>
 
-    <TextView
-        android:id="@+id/textView11"
-        android:layout_width="81dp"
-        android:layout_height="32dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/product_cost"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView12" />
+    <TableLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:shrinkColumns="0"
+        android:stretchColumns="1">
 
-    <EditText
-        android:id="@+id/etCost"
-        android:layout_width="138dp"
-        android:layout_height="29dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:inputType="numberDecimal"
-        android:textAppearance="@style/TextAppearance.AppCompat"
-        app:layout_constraintStart_toEndOf="@+id/textView11"
-        app:layout_constraintTop_toBottomOf="@+id/textView9" />
+        <TableRow>
+            <TextView
+                android:id="@+id/textView8"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/edittext_height"
+                android:layout_margin="@dimen/textview_margin"
+                android:text="@string/product_barcode"
+                android:textSize="@dimen/textview_font_size" />
 
-</android.support.constraint.ConstraintLayout>
+            <TextView
+                android:id="@+id/txtBarcode"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/edittext_height"
+                android:layout_margin="@dimen/textview_margin"
+                android:textSize="@dimen/textview_font_size" />
+        </TableRow>
+
+        <TableRow>
+            <TextView
+                android:id="@+id/textView9"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/textview_margin"
+                android:text="@string/product_name"
+                android:textSize="@dimen/textview_font_size" />
+
+            <EditText
+                android:id="@+id/etName"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/edittext_height"
+                android:layout_margin="@dimen/textview_margin"
+                android:inputType="text"
+                android:textSize="@dimen/textview_font_size"/>
+        </TableRow>
+
+        <TableRow>
+            <TextView
+                android:id="@+id/textView12"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/edittext_height"
+                android:text="@string/product_price"
+                android:textSize="@dimen/textview_font_size" />
+
+            <EditText
+                android:id="@+id/etPrice"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/edittext_height"
+                android:layout_margin="@dimen/textview_margin"
+                android:inputType="numberDecimal"
+                android:textSize="@dimen/textview_font_size" />
+        </TableRow>
+
+        <TableRow>
+            <TextView
+                android:id="@+id/textView11"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/edittext_height"
+                android:text="@string/product_cost"
+                android:textSize="@dimen/textview_font_size" />
+
+            <EditText
+                android:id="@+id/etCost"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/edittext_height"
+                android:layout_margin="@dimen/textview_margin"
+                android:inputType="numberDecimal"
+                android:textSize="@dimen/textview_font_size" />
+        </TableRow>
+    </TableLayout>
+
+    </LinearLayout>

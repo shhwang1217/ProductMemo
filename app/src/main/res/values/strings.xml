@@ -18,6 +18,7 @@
     <!-- SearchActivity -->
     <string name="search_product">Search Product</string>
     <string name="scan_barcode">Scan barcode</string>
+    <string name="input_barcode">Input a barcode manually</string>
     <string name="error_without_barcode">Please scan or input a barcode</string>
     <string name="browsing_history">Recent browsing history</string>
 
@@ -29,7 +30,7 @@
     <string name="edit">Edit</string>
     <string name="close">Close</string>
     <string name="delete_record">Delete</string>
-    <string name="confirm">Confirm</string>
+    <string name="confirm">OK</string>
     <string name="search">Search</string>
 
     <string name="product_barcode">Bar code</string>

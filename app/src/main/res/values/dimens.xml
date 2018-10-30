@@ -8,6 +8,8 @@
     <dimen name="textview_height">30dp</dimen>
     <dimen name="textview_font_size">20dp</dimen>
 
+    <dimen name="edittext_height">42dp</dimen>
+
     <dimen name="img_large_size"> 256dp</dimen>
     <dimen name="img_small_size"> 32dp</dimen>
 
