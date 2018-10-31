@@ -14,7 +14,8 @@ import android.widget.Toast;
 import java.util.HashSet;
 import java.util.Set;
 
-public class MyUtil {
+public class Common {
+
     static void showAlertDialog(Context ctx, String title, String message )
     {
         AlertDialog.Builder builder = new AlertDialog.Builder( ctx );
@@ -34,12 +35,14 @@ public class MyUtil {
 
 
     public static final int PERMISSION_READ_EXTERNAL_STORAGE = 0;
+    public static final int IMG_BUTTON_SIZE = 256;
+
     private static final String TAG = "Common";
 
     public static Bitmap downSize(Bitmap srcBitmap, int newSize) {
         if (newSize <= 1) {
             // 如果欲縮小的尺寸過小，就直接定為128
-            newSize = 128;
+            newSize = IMG_BUTTON_SIZE;
         }
         int srcWidth = srcBitmap.getWidth();
         int srcHeight = srcBitmap.getHeight();

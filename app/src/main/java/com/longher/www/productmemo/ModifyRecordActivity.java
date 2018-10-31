@@ -1,6 +1,5 @@
 package com.longher.www.productmemo;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -189,7 +188,7 @@ public class ModifyRecordActivity extends AppCompatActivity {
             switch (requestCode) {
                 case REQUEST_TAKE_PICTURE:
                     Bitmap srcPicture = BitmapFactory.decodeFile(file.getPath());
-                    Bitmap bitmap = MyUtil.downSize(srcPicture, imgBtnSnapshot.getWidth());
+                    Bitmap bitmap = Common.downSize(srcPicture, Common.IMG_BUTTON_SIZE );
                     if (bitmap != null) {
                         ByteArrayOutputStream baos = new ByteArrayOutputStream();
                         bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
@@ -219,7 +218,7 @@ public class ModifyRecordActivity extends AppCompatActivity {
         if (isIntentAvailable(this, intent)) {
             startActivityForResult(intent, REQUEST_TAKE_PICTURE);
         } else {
-            MyUtil.showAlertDialog( this, getString( R.string.prompt_error), "No Camera" );
+            Common.showAlertDialog( this, getString( R.string.prompt_error), "No Camera" );
         }
     }
 

@@ -27,43 +27,50 @@
             android:scaleType="fitCenter"
             android:src="@drawable/camera" />
 
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/textview_margin"
-            android:text="@string/scan_barcode"
-            android:textSize="@dimen/textview_font_size" />
-
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/textview_margin"
-        android:text="@string/input_barcode"
-        android:textSize="@dimen/textview_font_size" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
-
-        <EditText
-            android:id="@+id/etBarcode"
-            android:layout_width="258dp"
-            android:layout_height="@dimen/edittext_height"
-            android:ems="10"
-            android:hint="@string/product_barcode"
-            android:inputType="text" />
-
-        <Button
-            android:id="@+id/btnSearch"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:text="@string/search" />
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/textview_margin"
+                android:text="@string/input_barcode"
+                android:textSize="@dimen/textview_font_size" />
+
+            <EditText
+                android:id="@+id/etBarcode"
+                android:layout_width="258dp"
+                android:layout_height="@dimen/edittext_height"
+                android:ems="10"
+                android:hint="@string/product_barcode"
+                android:inputType="text" />
+
+        </LinearLayout>
+
     </LinearLayout>
+
+    <Button
+        android:id="@+id/btnSearch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:text="@string/search" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:textSize="@dimen/textview_font_size"
+        android:text="@string/browsing_history" />
+
+    <ListView
+        android:id="@+id/lvHistory"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
 
 </LinearLayout>

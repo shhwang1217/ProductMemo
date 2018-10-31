@@ -1,22 +1,37 @@
 package com.longher.www.productmemo;
 
+import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ListView;
+import android.widget.TextView;
 
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SearchActivity extends AppCompatActivity {
     Button btnSearch;
     ImageButton imgBtnScan;
     EditText etBarcode;
+
+    ListView lvHistory;
+    final List<SearchRecord> recList = new ArrayList<>();
+    SearchRecordAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +57,38 @@ public class SearchActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 doSearch();
+            }
+        });
+
+        // Search Record List
+        lvHistory = (ListView) findViewById(R.id.lvHistory );
+
+        adapter = new SearchRecordAdapter(this, recList );
+        lvHistory.setAdapter( adapter );
+
+        lvHistory.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                SearchRecord rec = (SearchRecord) parent.getItemAtPosition(position);
+                Log.d( "SearchActivity", "Remove barcode = " + rec.getBarcode() );
+                recList.remove( position );
+                adapter.notifyDataSetChanged();
+                return false;
+            }
+        });
+
+        lvHistory.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+                SearchRecord rec = (SearchRecord) parent.getItemAtPosition(position);
+                // Search barcode
+                String barcode = rec.getBarcode();
+                if( barcode.equals("") )
+                    return;
+
+                Log.d( "SearchActivity", "Search barcode = " + rec.getBarcode() );
+                dealProductBarcode( barcode );
             }
         });
 
@@ -77,7 +124,7 @@ public class SearchActivity extends AppCompatActivity {
         String strBarcode = etBarcode.getText().toString();
         if( strBarcode == "" )
         {
-            MyUtil.showAlertDialog( this, getString( R.string.prompt_error ), getString( R.string.error_without_barcode) );
+            Common.showAlertDialog( this, getString( R.string.prompt_error ), getString( R.string.error_without_barcode) );
             return;
         }
         dealProductBarcode( strBarcode );
@@ -114,5 +161,68 @@ public class SearchActivity extends AppCompatActivity {
             //Toast.makeText(this, "Scanned NG", Toast.LENGTH_LONG).show();
         }
     }
+
+
+    private class SearchRecordAdapter extends BaseAdapter {
+        static final int MAX_OF_RECENT_SEARCH_RECORD = 5;
+        Context context;
+        List<SearchRecord> recList;
+
+        SearchRecordAdapter(Context context, List<SearchRecord> recList) {
+            this.context = context;
+            this.recList = recList;
+        }
+
+        @Override
+        public int getCount() {
+            return recList.size();
+        }
+
+        @Override
+        public long getItemId(int i) {
+            return 0; // Ignored
+        }
+
+        @Override
+        public Object getItem(int i) {
+            return recList.get(i);
+        }
+
+        @Nullable
+        @Override
+        public CharSequence[] getAutofillOptions() {
+            return new CharSequence[0];
+        }
+
+        @Override
+        public View getView(int position, View itemView, ViewGroup parent) {
+            if (itemView == null) {
+                LayoutInflater layoutInflater = LayoutInflater.from(context);
+                itemView = layoutInflater.inflate(R.layout.product_item_view, parent, false);
+            }
+
+            SearchRecord rec = recList.get( position );
+
+            byte [] image = rec.getImage();
+            if( image != null )
+            {
+                //ImageView ivImage = (ImageView) itemView.findViewById(R.id.ivImage);
+                //ivImage.setImageResource(member.getImage());
+            }
+
+            TextView tvId = (TextView) itemView.findViewById(R.id.tvId);
+            tvId.setText( rec.getBarcode() );
+
+            TextView tvName = (TextView) itemView.findViewById(R.id.tvName);
+            tvName.setText(rec.getName());
+
+            TextView tvPrice = (TextView) itemView.findViewById(R.id.tvPrice);
+            tvPrice.setText( Double.toString( rec.getPrice() ) );
+
+            return itemView;
+        }
+    }
+
+
 
 }

@@ -22,10 +22,10 @@
 
         <ImageButton
             android:id="@+id/imgBtnSnapshot"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/img_large_size"
             android:layout_height="@dimen/img_large_size"
             android:adjustViewBounds="false"
-            android:scaleType="center"
+            android:scaleType="fitXY"
             android:src="@drawable/unknown_product" />
 
         <LinearLayout
@@ -58,11 +58,13 @@
         android:stretchColumns="1">
 
         <TableRow>
+
             <TextView
                 android:id="@+id/textView8"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/edittext_height"
-                android:layout_margin="@dimen/textview_margin"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/textview_title_padding"
                 android:text="@string/product_barcode"
                 android:textSize="@dimen/textview_font_size" />
 
@@ -70,16 +72,18 @@
                 android:id="@+id/txtBarcode"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/edittext_height"
-                android:layout_margin="@dimen/textview_margin"
+                android:layout_marginLeft="@dimen/textview_margin"
                 android:textSize="@dimen/textview_font_size" />
         </TableRow>
 
         <TableRow>
+
             <TextView
                 android:id="@+id/textView9"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_margin="@dimen/textview_margin"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/textview_title_padding"
                 android:text="@string/product_name"
                 android:textSize="@dimen/textview_font_size" />
 
@@ -93,10 +97,13 @@
         </TableRow>
 
         <TableRow>
+
             <TextView
                 android:id="@+id/textView12"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/edittext_height"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/textview_title_padding"
                 android:text="@string/product_price"
                 android:textSize="@dimen/textview_font_size" />
 
@@ -110,10 +117,13 @@
         </TableRow>
 
         <TableRow>
+
             <TextView
                 android:id="@+id/textView11"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/edittext_height"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/textview_title_padding"
                 android:text="@string/product_cost"
                 android:textSize="@dimen/textview_font_size" />
 

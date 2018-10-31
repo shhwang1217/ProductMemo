@@ -18,7 +18,7 @@
     <!-- SearchActivity -->
     <string name="search_product">搜尋商品</string>
     <string name="scan_barcode">掃描條碼</string>
-    <string name="input_barcode">手動輸入條碼</string>
+    <string name="input_barcode">掃描或輸入條碼</string>
     <string name="error_without_barcode">請掃描或輸入一個條碼</string>
     <string name="browsing_history">最近的瀏覽記錄</string>
 
