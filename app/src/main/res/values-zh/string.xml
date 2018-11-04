@@ -35,10 +35,8 @@
 
     <string name="product_barcode">條碼</string>
     <string name="product_name">名稱</string>
-    <string name="product_category">分類</string>
     <string name="product_cost">成本</string>
     <string name="product_price">售價</string>
-    <string name="product_vendor">供應商</string>
 
     <string name="error_db">資料庫錯誤</string>
 </resources>

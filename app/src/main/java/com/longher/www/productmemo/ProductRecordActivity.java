@@ -23,16 +23,17 @@ public class ProductRecordActivity extends AppCompatActivity {
 
     ImageView imgPic;
 
-    ImageButton imgBtnShow;
+    ImageView imgBtnShow;
 
     TextView tvBarcode;
     TextView tvName;
-    //TextView tvCategory;
-    //TextView tvVendor;
+
     TextView tvPrice;
     TextView tvCost;
 
     ProductRecord rec;
+
+    boolean isFromHistory = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +42,9 @@ public class ProductRecordActivity extends AppCompatActivity {
 
         Intent i = getIntent();
         strBarcode = i.getStringExtra( "barcode" );
-        Log.d( "ProductRecordActivity", "Barcode = " + strBarcode );
+        isFromHistory = i.getBooleanExtra( "isFromHistory", false );
+
+        Log.d( "ProductRecordActivity", "Barcode = " + strBarcode + ", isFromHistory = " + isFromHistory );
 
         if( strBarcode == "" )
         {
@@ -86,6 +89,12 @@ public class ProductRecordActivity extends AppCompatActivity {
         btnClose.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
+                if( !isFromHistory &&  rec != null )
+                {   // Not from History => From Search
+                    byte[] thumbnail = Common.pictureToThumbnail(rec.getPicture());
+                    SearchRecord r = new SearchRecord(rec.getBarcode(), rec.getName(), rec.getPrice(), thumbnail);
+                    sql.updateOrInsertSearchRecord(r);
+                }
                 finish();
             }
         });
@@ -95,18 +104,15 @@ public class ProductRecordActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 sql.deleteProductByBarcode(strBarcode);
+                sql.deleteSearchByBarcode(strBarcode);
                 finish();
             }
         });
 
         imgPic = (ImageView) findViewById(R.id.imgBtnSnapshot);
-        byte[] pic = rec.getPicture();
-        if( pic != null && pic.length > 0 )
-        {
-            Bitmap bitmap = BitmapFactory.decodeByteArray(rec.getPicture(), 0,
-                    rec.getPicture().length);
+        Bitmap bitmap = Common.binToBitmap( rec.getPicture() );
+        if( bitmap != null )
             imgPic.setImageBitmap( bitmap );
-        }
 
         tvBarcode = (TextView) findViewById(R.id.txtBarcode);
         tvBarcode.setText( strBarcode );
@@ -114,20 +120,16 @@ public class ProductRecordActivity extends AppCompatActivity {
         tvName = (TextView) findViewById(R.id.txtName);
         tvName.setText( rec.getName() );
 
-        //tvVendor = (TextView) findViewById(R.id.txtVendor);
-        //tvVendor .setText( rec.getVendor() );
-
         tvPrice = (TextView) findViewById(R.id.txtPrice );
         tvPrice.setText( Double.toString( rec.getPrice() ) );
 
         tvCost = (TextView) findViewById(R.id.txtCost );
         tvCost.setText( "?" );
 
-        imgBtnShow = (ImageButton) findViewById(R.id.imgBtnShow);
+        imgBtnShow = (ImageView) findViewById(R.id.imgBtnShow);
         imgBtnShow.setOnClickListener( new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                // doScanBarcode( view );
                 if( tvCost.getText().equals("?") )
                     tvCost.setText( Double.toString( rec.getCost() ) );
                 else

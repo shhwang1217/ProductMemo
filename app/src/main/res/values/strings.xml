@@ -35,10 +35,8 @@
 
     <string name="product_barcode">Bar code</string>
     <string name="product_name">Name</string>
-    <string name="product_category">Category</string>
     <string name="product_cost">Cost</string>
     <string name="product_price">Price</string>
-    <string name="product_vendor">Vendor</string>
 
     <string name="error_db">Database error</string>
 

@@ -20,11 +20,11 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <ImageButton
+        <ImageView
             android:id="@+id/imgBtnScan"
             android:layout_width="72dp"
             android:layout_height="72dp"
-            android:scaleType="fitCenter"
+            android:scaleType="fitXY"
             android:src="@drawable/camera" />
 
         <LinearLayout
@@ -46,7 +46,8 @@
                 android:layout_height="@dimen/edittext_height"
                 android:ems="10"
                 android:hint="@string/product_barcode"
-                android:inputType="text" />
+                android:inputType="text"
+                android:textSize="@dimen/textview_font_size" />
 
         </LinearLayout>
 

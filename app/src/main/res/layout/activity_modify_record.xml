@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <ImageButton
+        <ImageView
             android:id="@+id/imgBtnSnapshot"
             android:layout_width="@dimen/img_large_size"
             android:layout_height="@dimen/img_large_size"

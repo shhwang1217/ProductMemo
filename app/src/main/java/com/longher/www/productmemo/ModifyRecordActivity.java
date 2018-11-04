@@ -16,24 +16,26 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 public class ModifyRecordActivity extends AppCompatActivity {
     private static final int REQUEST_TAKE_PICTURE = 501;
 
     File file;
+    Uri contentUri;
 
     MySQLiteOpenHelper sql;
 
     String strBarcode;
     boolean isInsert = false;
 
-    ImageButton imgBtnSnapshot;
+    ImageView imgBtnSnapshot;
 
     Button btnConfirm;
     Button btnCancel;
@@ -41,7 +43,6 @@ public class ModifyRecordActivity extends AppCompatActivity {
     TextView tvBarcode;
 
     EditText etName;
-    //EditText etVendor;
     EditText etPrice;
     EditText etCost;
 
@@ -95,14 +96,11 @@ public class ModifyRecordActivity extends AppCompatActivity {
 
     void findViews()
     {
-        imgBtnSnapshot = (ImageButton) findViewById( R.id.imgBtnSnapshot );
-        byte [] pic = rec.getPicture();
-        if( pic != null ) { // Change Image Picture
-            Bitmap bitmap = BitmapFactory.decodeByteArray( pic, 0, pic.length );
-            //Drawable drawable = new BitmapDrawable(getResources(), bitmap);
-            //imgBtnSnapshot.setImageDrawable(drawable);
+        imgBtnSnapshot = (ImageView) findViewById( R.id.imgBtnSnapshot );
+
+        Bitmap bitmap = Common.binToBitmap( rec.getPicture() );
+        if( bitmap != null )
             imgBtnSnapshot.setImageBitmap( bitmap );
-        }
 
         imgBtnSnapshot.setOnClickListener( new View.OnClickListener(){
             @Override
@@ -133,17 +131,11 @@ public class ModifyRecordActivity extends AppCompatActivity {
         etName = (EditText) findViewById( R.id.etName );
         etName.setText( rec.getName() );
 
-        //etVendor = (EditText) findViewById( R.id.etVendor );
-        //etVendor.setText( rec.getVendor() );
-
-        // Category ... Spinner
-
         etPrice = (EditText) findViewById( R.id.etPrice );
         etPrice.setText( Double.toString( rec.getPrice() ) );
 
         etCost = (EditText) findViewById( R.id.etCost );
         etCost.setText( Double.toString( rec.getCost() ) );
-
     }
 
     void doConfirm( View view )
@@ -152,15 +144,10 @@ public class ModifyRecordActivity extends AppCompatActivity {
 
         // Bar code has been  set
         rec.setName( etName.getText().toString() );
-        //rec.setVendor( etVendor.getText().toString() );
-
-        //rec.setCategory( "N/A" );
-
         rec.setCost( Double.parseDouble( etCost.getText().toString() ) );
         rec.setPrice( Double.parseDouble( etPrice.getText().toString() ) );
 
         // rec has been set if take a picture, or let it be null.
-
         // Picture is set after take a picture
 
         if( isInsert )
@@ -170,9 +157,14 @@ public class ModifyRecordActivity extends AppCompatActivity {
 
         Log.d( "ModifyRecordActivity", "Confirm end, isInsert " + isInsert + " for barcode " + strBarcode );
 
+        // New SearchRecord
+        byte[] thumbnail = Common.pictureToThumbnail(rec.getPicture());
+
+        SearchRecord r = new SearchRecord(rec.getBarcode(), rec.getName(), rec.getPrice(), thumbnail);
+        sql.updateOrInsertSearchRecord(r);
+
         finish();
     }
-
 
     private boolean isIntentAvailable(Context context, Intent intent) {
         PackageManager packageManager = context.getPackageManager();
@@ -187,16 +179,24 @@ public class ModifyRecordActivity extends AppCompatActivity {
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case REQUEST_TAKE_PICTURE:
+                    Log.d( "REQUEST_TAKE_PICTURE", "onActivityResult begin" );
+/*
+                    Bitmap bitmap = null;
+                    try {
+                        bitmap = Common.decodeSampledBitmap(this, contentUri );
+                    } catch (IOException e) {
+                        // e.printStackTrace();
+                        Log.d( "REQUEST_TAKE_PICTURE", "onActivityResult exception" );
+                    }
+*/
                     Bitmap srcPicture = BitmapFactory.decodeFile(file.getPath());
                     Bitmap bitmap = Common.downSize(srcPicture, Common.IMG_BUTTON_SIZE );
+
                     if (bitmap != null) {
                         ByteArrayOutputStream baos = new ByteArrayOutputStream();
                         bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
                         rec.setPicture( baos.toByteArray() );
                         imgBtnSnapshot.setImageBitmap( bitmap );
-
-                        //Drawable drawable = new BitmapDrawable(getResources(), bitmap);
-                        //imgBtnSnapshot.setImageDrawable(drawable);
                     }
                     break;
                 default:
@@ -212,8 +212,8 @@ public class ModifyRecordActivity extends AppCompatActivity {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         file = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         file = new File(file, "picture.jpg");
-        Uri contentUri = FileProvider.getUriForFile(
-                this, getPackageName() + ".provider", file);
+        contentUri = FileProvider.getUriForFile(
+                this, getPackageName() + ".provider", file); // 不可用 Uri.fromFile
         intent.putExtra(MediaStore.EXTRA_OUTPUT, contentUri);
         if (isIntentAvailable(this, intent)) {
             startActivityForResult(intent, REQUEST_TAKE_PICTURE);

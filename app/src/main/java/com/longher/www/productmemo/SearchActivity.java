@@ -13,7 +13,7 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -26,25 +26,65 @@ import java.util.List;
 
 public class SearchActivity extends AppCompatActivity {
     Button btnSearch;
-    ImageButton imgBtnScan;
+    ImageView imgBtnScan;
     EditText etBarcode;
 
     ListView lvHistory;
     final List<SearchRecord> recList = new ArrayList<>();
     SearchRecordAdapter adapter;
 
+    MySQLiteOpenHelper sql;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d( "SearchActivity", "onCreate");
         setContentView(R.layout.activity_search);
+
+        sql = new MySQLiteOpenHelper( this );
+        if( sql == null )
+        {
+            Common.showAlertDialog( this, getString( R.string.prompt_error ), getString( R.string.error_db ));
+            finish();
+        }
+
         findViews();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d( "SearchActivity", "onStart: Refresh ListView");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        Log.d( "SearchActivity", "onResume: Refresh ListView");
+        // Refresh lvView if anyt
+
+        if( adapter != null )
+            adapter.updateHistory();
+
+        if( etBarcode != null )
+            etBarcode.setText( "" );
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if ( sql != null) {
+            sql.close();
+        }
     }
 
     void findViews()
     {
         etBarcode = (EditText) findViewById(R.id.etBarcode);
 
-        imgBtnScan = (ImageButton) findViewById(R.id.imgBtnScan);
+        imgBtnScan = (ImageView) findViewById(R.id.imgBtnScan);
         imgBtnScan.setOnClickListener( new View.OnClickListener(){
             @Override
             public void onClick(View view) {
@@ -71,9 +111,10 @@ public class SearchActivity extends AppCompatActivity {
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 SearchRecord rec = (SearchRecord) parent.getItemAtPosition(position);
                 Log.d( "SearchActivity", "Remove barcode = " + rec.getBarcode() );
+                sql.deleteSearchByBarcode( rec.getBarcode() ); // Just Delete Search Record, DON'T delete Product
                 recList.remove( position );
                 adapter.notifyDataSetChanged();
-                return false;
+                return true;
             }
         });
 
@@ -88,16 +129,14 @@ public class SearchActivity extends AppCompatActivity {
                     return;
 
                 Log.d( "SearchActivity", "Search barcode = " + rec.getBarcode() );
-                dealProductBarcode( barcode );
+                dealProductBarcode( barcode, true );
             }
         });
 
     }
 
-    void dealProductBarcode( String strBarcode )
+    void dealProductBarcode( String strBarcode, boolean isFromHistory )
     {
-        MySQLiteOpenHelper sql = new MySQLiteOpenHelper(this);
-
         ProductRecord r = sql.findProductByBarcode( strBarcode );
         if( r == null )
         {
@@ -112,11 +151,9 @@ public class SearchActivity extends AppCompatActivity {
             Log.d( "SearchActivity", "Show existed barcode = " + strBarcode );
             Intent intent = new Intent(this, ProductRecordActivity.class );
             intent.putExtra( "barcode", strBarcode );
+            intent.putExtra( "isFromHistory", isFromHistory );
             startActivity(intent);
         }
-
-        sql.close();
-        sql = null;
     }
 
     void doSearch()
@@ -127,7 +164,7 @@ public class SearchActivity extends AppCompatActivity {
             Common.showAlertDialog( this, getString( R.string.prompt_error ), getString( R.string.error_without_barcode) );
             return;
         }
-        dealProductBarcode( strBarcode );
+        dealProductBarcode( strBarcode, false );
         Log.d( "SearchActivity", "dealProductBarcode: barcode = " + strBarcode );
     }
 
@@ -136,9 +173,9 @@ public class SearchActivity extends AppCompatActivity {
         Log.d( "SearchActivity", "Scan barcode begin" );
 
         IntentIntegrator integrator = new IntentIntegrator(this);
-        integrator.setPrompt("Scan a barcode");
+        //integrator.setPrompt("Scan a barcode");
         integrator.setCameraId(0);  // Use a specific camera of the device
-        integrator.setOrientationLocked(false);
+        integrator.setOrientationLocked(true);
         integrator.setBeepEnabled(true);
         integrator.initiateScan();
     }
@@ -153,7 +190,7 @@ public class SearchActivity extends AppCompatActivity {
                 Log.d("MainActivity", "Scanned");
                 // Toast.makeText(this, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
                 // etBarcode.setText( result.getContents().toString() );
-                dealProductBarcode( result.getContents().toString() );
+                dealProductBarcode( result.getContents().toString(), false ); // From Scanner
             }
         } else {
             // This is important, otherwise the result will not be passed to the fragment
@@ -164,7 +201,6 @@ public class SearchActivity extends AppCompatActivity {
 
 
     private class SearchRecordAdapter extends BaseAdapter {
-        static final int MAX_OF_RECENT_SEARCH_RECORD = 5;
         Context context;
         List<SearchRecord> recList;
 
@@ -206,8 +242,8 @@ public class SearchActivity extends AppCompatActivity {
             byte [] image = rec.getImage();
             if( image != null )
             {
-                //ImageView ivImage = (ImageView) itemView.findViewById(R.id.ivImage);
-                //ivImage.setImageResource(member.getImage());
+                ImageView ivImage = (ImageView) itemView.findViewById(R.id.ivImage);
+                ivImage.setImageBitmap( Common.binToBitmap( image ) );
             }
 
             TextView tvId = (TextView) itemView.findViewById(R.id.tvId);
@@ -221,8 +257,22 @@ public class SearchActivity extends AppCompatActivity {
 
             return itemView;
         }
+
+        public void updateHistory()
+        {
+            Log.d( "SearchRecordAdapter", "updateHistory");
+            MySQLiteOpenHelper sql = new MySQLiteOpenHelper( getBaseContext() );
+            if( sql != null )
+            {
+                List<SearchRecord> list = sql.getHistoryRecords( Common.MAX_OF_RECENT_SEARCH_RECORD );
+                if( list != null )
+                {
+                    recList.clear();
+                    recList.addAll( list );
+                    notifyDataSetChanged();
+                }
+            }
+
+        }
     }
-
-
-
 }
