@@ -159,7 +159,7 @@ public class SearchActivity extends AppCompatActivity {
     void doSearch()
     {
         String strBarcode = etBarcode.getText().toString();
-        if( strBarcode == "" )
+        if( strBarcode.equals("") )
         {
             Common.showAlertDialog( this, getString( R.string.prompt_error ), getString( R.string.error_without_barcode) );
             return;

@@ -145,15 +145,13 @@
             android:layout_margin="@dimen/textview_margin"
             android:textSize="@dimen/textview_font_size"/>
 
-        <ImageView
-            android:id="@+id/imgBtnShow"
-            android:layout_width="@dimen/img_small_size"
-            android:layout_height="@dimen/img_small_size"
-            android:layout_gravity="center_vertical"
-            android:scaleType="fitXY"
-            android:src="@drawable/eye" />
     </TableRow>
 
-  </TableLayout>
+    </TableLayout>
+
+    <View
+        android:id="@+id/viewShow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

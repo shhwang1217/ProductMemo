@@ -104,97 +104,41 @@ public class Common {
         return null;
     }
 
-    public static Bitmap rotateImageIfRequired( Context context, Bitmap img, Uri selectedImageUri)
+    static public int getRotateAngle( String strFileName )
     {
-        int rotation = getRotation(context, selectedImageUri );
-        if (rotation != 0) {
-            Matrix matrix = new Matrix();
-            matrix.postRotate(rotation);
-            Bitmap rotatedImg = Bitmap.createBitmap(img, 0, 0, img.getWidth(), img.getHeight(), matrix, true);
-            img.recycle();
-            return rotatedImg;
+        String orientString;
+
+        try {
+            ExifInterface exifReader = new ExifInterface( strFileName );
+            exifReader.getAttributeInt(ExifInterface.TAG_ORIENTATION, -1);
+            orientString = exifReader.getAttribute(ExifInterface.TAG_ORIENTATION);
+            Log.d("Common", "getRotateAngle: orientString = " + orientString);
+        } catch (IOException e) {
+            //e.printStackTrace();
+            orientString = "0";
+            Log.d("Common", "getRotateAngle: exception orientString = 0" + orientString);
         }
-        return img;
+
+        int orientation = orientString != null ? Integer.parseInt(orientString) : ExifInterface.ORIENTATION_NORMAL;
+        Log.d("TEST", "getRotateAngle: orientation = " + orientation);
+
+        int rotationAngle = 0;
+        if (orientation == ExifInterface.ORIENTATION_ROTATE_90) rotationAngle = 90;
+        if (orientation == ExifInterface.ORIENTATION_ROTATE_180) rotationAngle = 180;
+        if (orientation == ExifInterface.ORIENTATION_ROTATE_270) rotationAngle = 270;
+        Log.d("Common", "getRotateAngle: rotationAngle = " + rotationAngle);
+
+        return rotationAngle;
     }
 
-    private static int getRotation(Context context,Uri selectedImage) {
-        int rotation = 0;
-        ContentResolver content = context.getContentResolver();
-        Cursor mediaCursor = content.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                new String[] { "orientation", "date_added" },
-                null, null, "date_added desc");
-
-        if (mediaCursor != null && mediaCursor.getCount() != 0) {
-            while(mediaCursor.moveToNext()){
-                rotation = mediaCursor.getInt(0);
-                break;
-            }
-        }
-        mediaCursor.close();
-        return rotation;
+    public static Bitmap rotateBitmap(Bitmap source, int angle)
+    {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(angle);
+        Bitmap result = Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
+        source.recycle();
+        return result;
     }
-
-    private static final int MAX_HEIGHT = Common.IMG_BUTTON_SIZE;  //1024;
-    private static final int MAX_WIDTH = Common.IMG_BUTTON_SIZE;   //1024;
-
-    public static Bitmap decodeSampledBitmap(Context context, Uri selectedImage)
-            throws IOException {
-
-        // First decode with inJustDecodeBounds=true to check dimensions
-        final BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        InputStream imageStream = context.getContentResolver().openInputStream(selectedImage);
-        BitmapFactory.decodeStream(imageStream, null, options);
-        imageStream.close();
-
-        // Calculate inSampleSize
-        options.inSampleSize = calculateInSampleSize(options, MAX_WIDTH, MAX_HEIGHT);
-
-        // Decode bitmap with inSampleSize set
-        options.inJustDecodeBounds = false;
-        imageStream = context.getContentResolver().openInputStream(selectedImage);
-        Bitmap img = BitmapFactory.decodeStream(imageStream, null, options);
-
-        img = rotateImageIfRequired( context, img, selectedImage);
-        return img;
-    }
-
-    public static int calculateInSampleSize(BitmapFactory.Options options,
-                                            int reqWidth, int reqHeight) {
-
-        // Raw height and width of image
-        final int height = options.outHeight;
-        final int width = options.outWidth;
-        int inSampleSize = 1;
-
-        if (height > reqHeight || width > reqWidth) {
-
-            // Calculate ratios of height and width to requested height and width
-            final int heightRatio = Math.round((float) height / (float) reqHeight);
-            final int widthRatio = Math.round((float) width / (float) reqWidth);
-
-            // Choose the smallest ratio as inSampleSize value, this will guarantee a final image
-            // with both dimensions larger than or equal to the requested height and width.
-            inSampleSize = heightRatio < widthRatio ? heightRatio : widthRatio;
-
-            // This offers some additional logic in case the image has a strange
-            // aspect ratio. For example, a panorama may have a much larger
-            // width than height. In these cases the total pixels might still
-            // end up being too large to fit comfortably in memory, so we should
-            // be more aggressive with sample down the image (=larger inSampleSize).
-
-            final float totalPixels = width * height;
-
-            // Anything more than 2x the requested pixels we'll sample down further
-            final float totalReqPixelsCap = reqWidth * reqHeight * 2;
-
-            while (totalPixels / (inSampleSize * inSampleSize) > totalReqPixelsCap) {
-                inSampleSize++;
-            }
-        }
-        return inSampleSize;
-    }
-
 
     // New Permission see Appendix A
     public static void askPermissions(Activity activity, String[] permissions, int requestCode) {

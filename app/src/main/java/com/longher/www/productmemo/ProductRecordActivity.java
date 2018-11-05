@@ -23,7 +23,7 @@ public class ProductRecordActivity extends AppCompatActivity {
 
     ImageView imgPic;
 
-    ImageView imgBtnShow;
+    View viewShow;
 
     TextView tvBarcode;
     TextView tvName;
@@ -126,8 +126,8 @@ public class ProductRecordActivity extends AppCompatActivity {
         tvCost = (TextView) findViewById(R.id.txtCost );
         tvCost.setText( "?" );
 
-        imgBtnShow = (ImageView) findViewById(R.id.imgBtnShow);
-        imgBtnShow.setOnClickListener( new View.OnClickListener(){
+        viewShow = (View) findViewById(R.id.viewShow);
+        viewShow.setOnClickListener( new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 if( tvCost.getText().equals("?") )

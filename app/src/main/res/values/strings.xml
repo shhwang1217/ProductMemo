@@ -13,6 +13,7 @@
     <string name="error_incorrect_password">Email or password is incorrect</string>
 
     <string name="prompt_error">Error</string>
+    <string name="prompt_warning">Warning</string>
     <string name="prompt_register_ok">Register OK</string>
 
     <!-- SearchActivity -->
@@ -39,6 +40,6 @@
     <string name="product_price">Price</string>
 
     <string name="error_db">Database error</string>
-
+    <string name="no_camera">No camera</string>
 
 </resources>

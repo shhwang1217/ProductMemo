@@ -4,8 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -18,6 +20,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -142,8 +145,15 @@ public class ModifyRecordActivity extends AppCompatActivity {
     {
         Log.d( "ModifyRecordActivity", "Confirm begin, isInsert " + isInsert + " for barcode " + strBarcode );
 
+        String strBarcode = etName.getText().toString();
+        if( strBarcode.equals(""))
+        {
+            Common.showAlertDialog( this, getString( R.string.prompt_warning), getString( R.string.error_without_barcode) );
+            return;
+        }
+
         // Bar code has been  set
-        rec.setName( etName.getText().toString() );
+        rec.setName( strBarcode );
         rec.setCost( Double.parseDouble( etCost.getText().toString() ) );
         rec.setPrice( Double.parseDouble( etPrice.getText().toString() ) );
 
@@ -180,17 +190,18 @@ public class ModifyRecordActivity extends AppCompatActivity {
             switch (requestCode) {
                 case REQUEST_TAKE_PICTURE:
                     Log.d( "REQUEST_TAKE_PICTURE", "onActivityResult begin" );
-/*
-                    Bitmap bitmap = null;
-                    try {
-                        bitmap = Common.decodeSampledBitmap(this, contentUri );
-                    } catch (IOException e) {
-                        // e.printStackTrace();
-                        Log.d( "REQUEST_TAKE_PICTURE", "onActivityResult exception" );
-                    }
-*/
+
+                    int angle = Common.getRotateAngle( file.getPath() );
                     Bitmap srcPicture = BitmapFactory.decodeFile(file.getPath());
-                    Bitmap bitmap = Common.downSize(srcPicture, Common.IMG_BUTTON_SIZE );
+                    Bitmap bitmap = Common.downSize( srcPicture, Common.IMG_BUTTON_SIZE );
+                    srcPicture.recycle();
+
+                    //Toast.makeText( this, "Angle = " + angle, Toast.LENGTH_SHORT ).show();
+
+                    if( angle != 0 )
+                    {
+                        bitmap = Common.rotateBitmap( bitmap, 90 );
+                    }
 
                     if (bitmap != null) {
                         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -218,7 +229,7 @@ public class ModifyRecordActivity extends AppCompatActivity {
         if (isIntentAvailable(this, intent)) {
             startActivityForResult(intent, REQUEST_TAKE_PICTURE);
         } else {
-            Common.showAlertDialog( this, getString( R.string.prompt_error), "No Camera" );
+            Common.showAlertDialog( this, getString( R.string.prompt_error), getString( R.string.no_camera) );
         }
     }
 
