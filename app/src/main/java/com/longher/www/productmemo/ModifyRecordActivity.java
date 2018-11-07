@@ -49,8 +49,18 @@ public class ModifyRecordActivity extends AppCompatActivity {
     EditText etPrice;
     EditText etCost;
 
-    // Spinner
     ProductRecord rec;
+
+
+    public void updateBarcodeFromHistoryCache( SearchRecord r )
+    {
+        HistorySQLiteHelper sqlCache = new HistorySQLiteHelper( getBaseContext() );
+        if( sqlCache != null )
+        {
+            sqlCache.updateOrInsertSearchRecord(r);
+            sqlCache.close();
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +79,7 @@ public class ModifyRecordActivity extends AppCompatActivity {
         }
 
         if (sql == null) {
-            sql = new MySQLiteOpenHelper(this);
+            sql = new MySQLiteOpenHelper(this, Common.getCurrentDbName(), Common.getCurrentDbVersion() );
         }
 
         if( sql == null )
@@ -171,7 +181,7 @@ public class ModifyRecordActivity extends AppCompatActivity {
         byte[] thumbnail = Common.pictureToThumbnail(rec.getPicture());
 
         SearchRecord r = new SearchRecord(rec.getBarcode(), rec.getName(), rec.getPrice(), thumbnail);
-        sql.updateOrInsertSearchRecord(r);
+        updateBarcodeFromHistoryCache( r );
 
         finish();
     }

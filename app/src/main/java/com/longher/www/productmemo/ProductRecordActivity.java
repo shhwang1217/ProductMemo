@@ -35,6 +35,26 @@ public class ProductRecordActivity extends AppCompatActivity {
 
     boolean isFromHistory = false;
 
+    public void updateBarcodeFromHistoryCache( SearchRecord r )
+    {
+        HistorySQLiteHelper sqlCache = new HistorySQLiteHelper( getBaseContext() );
+        if( sqlCache != null )
+        {
+            sqlCache.updateOrInsertSearchRecord(r);
+            sqlCache.close();
+        }
+    }
+
+    public void deleteBarcodeFromHistoryCache( String barcode )
+    {
+        HistorySQLiteHelper sqlCache = new HistorySQLiteHelper( getBaseContext() );
+        if( sqlCache != null )
+        {
+            sqlCache.deleteSearchByBarcode( barcode );
+            sqlCache.close();
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,7 +74,7 @@ public class ProductRecordActivity extends AppCompatActivity {
         }
 
         if (sql == null) {
-            sql = new MySQLiteOpenHelper(this);
+            sql = new MySQLiteOpenHelper(this, Common.getCurrentDbName(), Common.getCurrentDbVersion() );
         }
 
         if( sql == null )
@@ -93,7 +113,7 @@ public class ProductRecordActivity extends AppCompatActivity {
                 {   // Not from History => From Search
                     byte[] thumbnail = Common.pictureToThumbnail(rec.getPicture());
                     SearchRecord r = new SearchRecord(rec.getBarcode(), rec.getName(), rec.getPrice(), thumbnail);
-                    sql.updateOrInsertSearchRecord(r);
+                    updateBarcodeFromHistoryCache( r );
                 }
                 finish();
             }
@@ -104,7 +124,7 @@ public class ProductRecordActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 sql.deleteProductByBarcode(strBarcode);
-                sql.deleteSearchByBarcode(strBarcode);
+                deleteBarcodeFromHistoryCache(strBarcode);
                 finish();
             }
         });
@@ -140,6 +160,8 @@ public class ProductRecordActivity extends AppCompatActivity {
 
     void doEditProduct( View view )
     {
+        Common.showToast(this, Common.getCurrentDbName() + "," + Common.getCurrentDbVersion() );
+
         Log.d( "SearchActivity", "Insert for new barcode = " + strBarcode );
         Intent intent = new Intent(this, ModifyRecordActivity.class );
         intent.putExtra( "barcode", strBarcode );

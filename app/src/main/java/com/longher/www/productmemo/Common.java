@@ -11,6 +11,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -19,6 +20,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashSet;
@@ -26,6 +28,43 @@ import java.util.Set;
 
 public class Common {
     static final int MAX_OF_RECENT_SEARCH_RECORD = 5;
+
+    private static final String TAG = "Common";
+
+    // Default DB Name & Version
+    private static String DB_NAME;
+    private static int DB_VERSION = 1;
+
+    public static String getCurrentDbName()
+    {
+        if( DB_NAME == null )
+        {
+            setDbName( "ProductMemo" );
+        }
+        return DB_NAME;
+    }
+
+    public static int getCurrentDbVersion()
+    {
+        if( DB_VERSION <= 0 )
+            DB_VERSION = 1;
+        return DB_VERSION;
+    }
+
+    public static void setDbName( String strDbName )
+    {
+        if( !strDbName.equals("") )
+        {
+            String DATABASE_FILE_PATH = Environment.getExternalStorageDirectory().getAbsolutePath();
+            DB_NAME = DATABASE_FILE_PATH + File.separator + strDbName;
+            Log.d( TAG, "setDbName = " + DB_NAME );
+        }
+    }
+
+    public static void setDbVersion()
+    {
+        DB_VERSION = 1;
+    }
 
     static void showAlertDialog(Context ctx, String title, String message )
     {
@@ -49,7 +88,6 @@ public class Common {
     public static final int IMG_BUTTON_SIZE = 256;
     public static final int IMG_SMALL_SIZE = 32;
 
-    private static final String TAG = "Common";
 
     public static Bitmap downSize(Bitmap srcBitmap, int newSize) {
         if (newSize <= 1) {
@@ -112,21 +150,21 @@ public class Common {
             ExifInterface exifReader = new ExifInterface( strFileName );
             exifReader.getAttributeInt(ExifInterface.TAG_ORIENTATION, -1);
             orientString = exifReader.getAttribute(ExifInterface.TAG_ORIENTATION);
-            Log.d("Common", "getRotateAngle: orientString = " + orientString);
+            Log.d(TAG, "getRotateAngle: orientString = " + orientString);
         } catch (IOException e) {
             //e.printStackTrace();
             orientString = "0";
-            Log.d("Common", "getRotateAngle: exception orientString = 0" + orientString);
+            Log.d(TAG, "getRotateAngle: exception orientString = 0" + orientString);
         }
 
         int orientation = orientString != null ? Integer.parseInt(orientString) : ExifInterface.ORIENTATION_NORMAL;
-        Log.d("TEST", "getRotateAngle: orientation = " + orientation);
+        Log.d(TAG, "getRotateAngle: orientation = " + orientation);
 
         int rotationAngle = 0;
         if (orientation == ExifInterface.ORIENTATION_ROTATE_90) rotationAngle = 90;
         if (orientation == ExifInterface.ORIENTATION_ROTATE_180) rotationAngle = 180;
         if (orientation == ExifInterface.ORIENTATION_ROTATE_270) rotationAngle = 270;
-        Log.d("Common", "getRotateAngle: rotationAngle = " + rotationAngle);
+        Log.d(TAG, "getRotateAngle: rotationAngle = " + rotationAngle);
 
         return rotationAngle;
     }

@@ -41,7 +41,8 @@ public class SearchActivity extends AppCompatActivity {
         Log.d( "SearchActivity", "onCreate");
         setContentView(R.layout.activity_search);
 
-        sql = new MySQLiteOpenHelper( this );
+        sql = new MySQLiteOpenHelper( this, Common.getCurrentDbName(), Common.getCurrentDbVersion() );
+
         if( sql == null )
         {
             Common.showAlertDialog( this, getString( R.string.prompt_error ), getString( R.string.error_db ));
@@ -65,7 +66,7 @@ public class SearchActivity extends AppCompatActivity {
         // Refresh lvView if anyt
 
         if( adapter != null )
-            adapter.updateHistory();
+            adapter.updateHistory( "" );
 
         if( etBarcode != null )
             etBarcode.setText( "" );
@@ -111,8 +112,9 @@ public class SearchActivity extends AppCompatActivity {
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 SearchRecord rec = (SearchRecord) parent.getItemAtPosition(position);
                 Log.d( "SearchActivity", "Remove barcode = " + rec.getBarcode() );
-                sql.deleteSearchByBarcode( rec.getBarcode() ); // Just Delete Search Record, DON'T delete Product
+
                 recList.remove( position );
+                adapter.updateHistory( rec.getBarcode() );
                 adapter.notifyDataSetChanged();
                 return true;
             }
@@ -258,19 +260,23 @@ public class SearchActivity extends AppCompatActivity {
             return itemView;
         }
 
-        public void updateHistory()
+        public void updateHistory( String barcode )
         {
             Log.d( "SearchRecordAdapter", "updateHistory");
-            MySQLiteOpenHelper sql = new MySQLiteOpenHelper( getBaseContext() );
-            if( sql != null )
+            HistorySQLiteHelper sqlCache = new HistorySQLiteHelper( getBaseContext() );
+            if( sqlCache != null )
             {
-                List<SearchRecord> list = sql.getHistoryRecords( Common.MAX_OF_RECENT_SEARCH_RECORD );
+                if( !barcode.equals(""))
+                    sqlCache.deleteSearchByBarcode( barcode );
+
+                List<SearchRecord> list = sqlCache.getHistoryRecords( Common.MAX_OF_RECENT_SEARCH_RECORD );
                 if( list != null )
                 {
                     recList.clear();
                     recList.addAll( list );
                     notifyDataSetChanged();
                 }
+                sqlCache.close();
             }
 
         }
