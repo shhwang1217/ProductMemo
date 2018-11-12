@@ -37,10 +37,6 @@ public class Common {
 
     public static String getCurrentDbName()
     {
-        if( DB_NAME == null )
-        {
-            setDbName( "ProductMemo" );
-        }
         return DB_NAME;
     }
 
@@ -61,9 +57,9 @@ public class Common {
         }
     }
 
-    public static void setDbVersion()
+    public static void setDbVersion( int iVersion )
     {
-        DB_VERSION = 1;
+        DB_VERSION = iVersion;
     }
 
     static void showAlertDialog(Context ctx, String title, String message )

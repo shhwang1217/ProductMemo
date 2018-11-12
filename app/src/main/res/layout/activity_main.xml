@@ -4,19 +4,29 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:gravity="center"
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="TextView" />
+    <ImageView
+        android:id="@+id/imgTitle"
+        android:layout_width="@dimen/img_large_size"
+        android:layout_height="@dimen/img_large_size"
+        android:adjustViewBounds="false"
+        android:padding="@dimen/btn_margin"
+        android:scaleType="centerCrop"
+        android:src="@drawable/main_product" />
 
     <Button
-        android:id="@+id/btnPick"
+        android:id="@+id/btnNewDB"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Button" />
+        android:text="@string/create_db" />
+
+    <Button
+        android:id="@+id/btnOpenDB"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/open_db" />
+
 </LinearLayout>

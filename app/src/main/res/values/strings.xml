@@ -34,6 +34,9 @@
     <string name="confirm">OK</string>
     <string name="search">Search</string>
 
+    <string name="create_db">Create DB</string>
+    <string name="open_db">Open DB</string>
+
     <string name="product_barcode">Bar code</string>
     <string name="product_name">Name</string>
     <string name="product_cost">Cost</string>

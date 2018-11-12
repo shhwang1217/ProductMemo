@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HistorySQLiteHelper extends SQLiteOpenHelper {
-    private static final String DB_NAME = "product_cache";
+    private static final String DB_NAME = "product_cache.sqlite3";
     private static final int DB_VERSION = 1;
 
     private static final String COL_barcode = "barcode";  // 商品條碼, 搜尋用
@@ -126,5 +126,4 @@ public class HistorySQLiteHelper extends SQLiteOpenHelper {
                 + " ORDER BY " + COL_idx + " DESC LIMIT -1 OFFSET "
                 + Integer.toString( nReserved ) + ")" );
     }
-
 }
