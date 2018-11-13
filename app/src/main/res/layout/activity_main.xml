@@ -17,11 +17,14 @@
         android:scaleType="centerCrop"
         android:src="@drawable/main_product" />
 
-    <Button
-        android:id="@+id/btnNewDB"
+    <TextView
+        android:id="@+id/tvDbName"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/create_db" />
+        android:layout_height="@dimen/textview_height"
+        android:layout_margin="@dimen/btn_margin"
+        android:background="@drawable/border"
+        android:gravity="center"
+        android:textSize="@dimen/textview_font_size" />
 
     <Button
         android:id="@+id/btnOpenDB"

@@ -34,7 +34,7 @@
     <string name="confirm">確定</string>
     <string name="search">搜尋</string>
 
-    <string name="create_db">新增資料庫</string>
+    <string name="select_db">請選擇一個資料庫路徑</string>
     <string name="open_db">開啟資料庫</string>
 
     <string name="product_barcode">條碼</string>

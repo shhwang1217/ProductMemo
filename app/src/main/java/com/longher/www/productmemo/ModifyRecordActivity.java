@@ -51,7 +51,6 @@ public class ModifyRecordActivity extends AppCompatActivity {
 
     ProductRecord rec;
 
-
     public void updateBarcodeFromHistoryCache( SearchRecord r )
     {
         HistorySQLiteHelper sqlCache = new HistorySQLiteHelper( getBaseContext() );
@@ -200,7 +199,6 @@ public class ModifyRecordActivity extends AppCompatActivity {
             switch (requestCode) {
                 case REQUEST_TAKE_PICTURE:
                     Log.d( "REQUEST_TAKE_PICTURE", "onActivityResult begin" );
-
                     int angle = Common.getRotateAngle( file.getPath() );
                     Bitmap srcPicture = BitmapFactory.decodeFile(file.getPath());
                     Bitmap bitmap = Common.downSize( srcPicture, Common.IMG_BUTTON_SIZE );

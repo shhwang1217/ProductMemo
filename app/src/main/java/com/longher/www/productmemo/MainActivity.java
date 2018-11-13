@@ -1,23 +1,31 @@
 package com.longher.www.productmemo;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
+
+import java.io.File;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     Button btnOpenDB;
-    Button btnNewDB;
+    TextView tvDbName;
 
     private static final String PREF_NAME = "pref";
     private static final String LAST_OPEN_DB_NAME = "last_open_db_name";
     private static final String LAST_OPEN_DB_VERSION = "last_open_db_version";
+
+    public static final int READ_REQUEST_CODE = 501;
 
     private String loadLastOpenDbName()
     {
@@ -60,11 +68,15 @@ public class MainActivity extends AppCompatActivity {
 
     void findViews()
     {
-        btnNewDB = findViewById( R.id.btnNewDB );
-        btnNewDB.setOnClickListener( new View.OnClickListener(){
+        tvDbName = findViewById( R.id.tvDbName );
+
+        String strDB = loadLastOpenDbName();
+        tvDbName.setText( strDB );
+
+        tvDbName.setOnClickListener( new View.OnClickListener(){
              @Override
              public void onClick(View view) {
-                 createNewDb();
+                 pickDbPath();
              }
         });
 
@@ -79,15 +91,17 @@ public class MainActivity extends AppCompatActivity {
 
     void openDb()
     {
-        String strDB = loadLastOpenDbName();
-        int iVersion = loadLastOpenDbVersion();
+        String strDB = tvDbName.getText().toString();
+        if( strDB == null || strDB.equals(""))
+        {
+            Common.showAlertDialog( MainActivity.this, getString( R.string.prompt_error ), getString( R.string.select_db));
+            return;
+        }
 
         if( isDbOK( strDB ) )
         {
             Log.d( TAG, "Open DB: " + strDB );
             Common.setDbName( strDB );
-            Common.setDbVersion( iVersion );
-
             Intent intent = new Intent(MainActivity.this, SearchActivity.class );
             startActivity(intent);
         }
@@ -95,28 +109,52 @@ public class MainActivity extends AppCompatActivity {
         {
             Common.showAlertDialog( MainActivity.this, getString( R.string.prompt_error ), getString( R.string.error_db));
         }
-
     }
 
-    void createNewDb()
+    void pickDbPath()
     {
-        String path = Environment.getExternalStorageDirectory().getPath() + "/FOLDER/DB_FILE";
-
-        Common.showToast( this, "Path = " + path );
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType( "*/*");
+        startActivityForResult(intent, READ_REQUEST_CODE);
     }
 
-    void initDb( String strDB, int iVerison )
-    {
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
 
+        // The ACTION_OPEN_DOCUMENT intent was sent with the request code
+        // READ_REQUEST_CODE. If the request code seen here doesn't match, it's the
+        // response to some other intent, and the code below shouldn't run at all.
+
+        if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            // The document selected by the user won't be returned in the intent.
+            // Instead, a URI to that document will be contained in the return intent
+            // provided to this method as a parameter.
+            // Pull that URI using resultData.getData().
+            Uri uri = null;
+            if (resultData != null) {
+                uri = resultData.getData();
+                Log.i(TAG, "Uri: " + uri.toString());
+                // File.separator + "ProductMemo.sqlite3"
+                tvDbName.setText( uri.toString() );
+            }
+        }
     }
+
 
     boolean isDbOK( String strDB )
     {
         SQLiteDatabase db;
-        db = SQLiteDatabase.openDatabase( strDB, null, SQLiteDatabase.OPEN_READONLY);
-        if (db == null)
+
+        try {
+            db = SQLiteDatabase.openDatabase( strDB, null, SQLiteDatabase.OPEN_READONLY);
+            if (db == null)
+                return false;
+            db.close();
+        } catch (Exception e) {
+            e.printStackTrace();
             return false;
-        db.close();
+        }
         return true;
     }
 

@@ -160,7 +160,7 @@ public class ProductRecordActivity extends AppCompatActivity {
 
     void doEditProduct( View view )
     {
-        Common.showToast(this, Common.getCurrentDbName() + "," + Common.getCurrentDbVersion() );
+        //Common.showToast(this, Common.getCurrentDbName() + "," + Common.getCurrentDbVersion() );
 
         Log.d( "SearchActivity", "Insert for new barcode = " + strBarcode );
         Intent intent = new Intent(this, ModifyRecordActivity.class );

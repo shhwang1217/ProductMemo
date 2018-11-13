@@ -51,8 +51,9 @@ public class Common {
     {
         if( !strDbName.equals("") )
         {
-            String DATABASE_FILE_PATH = Environment.getExternalStorageDirectory().getAbsolutePath();
-            DB_NAME = DATABASE_FILE_PATH + File.separator + strDbName;
+            //String DATABASE_FILE_PATH = Environment.getExternalStorageDirectory().getAbsolutePath();
+            //DB_NAME = DATABASE_FILE_PATH + File.separator + strDbName;
+            DB_NAME = strDbName;
             Log.d( TAG, "setDbName = " + DB_NAME );
         }
     }
@@ -79,8 +80,7 @@ public class Common {
         Toast.makeText( ctx, message, Toast.LENGTH_SHORT ).show();
     }
 
-
-    public static final int PERMISSION_READ_EXTERNAL_STORAGE = 0;
+    public static final int PERMISSION_READ_EXTERNAL_STORAGE = 10;
     public static final int IMG_BUTTON_SIZE = 256;
     public static final int IMG_SMALL_SIZE = 32;
 
