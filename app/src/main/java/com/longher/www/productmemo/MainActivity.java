@@ -2,16 +2,24 @@ package com.longher.www.productmemo;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Environment;
+import android.support.annotation.NonNull;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import java.io.File;
@@ -57,11 +65,18 @@ public class MainActivity extends AppCompatActivity {
         Log.d( TAG, "Save last DB Version = " + iVersion );
     }
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        String[] permissions = {
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.CAMERA
+        };
+        Common.askPermissions(this, permissions, Common.PERMISSION_READ_EXTERNAL_STORAGE);
+
 
         findViews();
     }
@@ -98,11 +113,22 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        if( isDbOK( strDB ) )
-        {
-            Log.d( TAG, "Open DB: " + strDB );
+        boolean bnOK = false;
+
+        try {
+            MySQLiteOpenHelper sql = new MySQLiteOpenHelper( this,  strDB, 1 );
+            sql.close();
+            bnOK = true;
+            saveLastOpenDbName( strDB );
             Common.setDbName( strDB );
-            Intent intent = new Intent(MainActivity.this, SearchActivity.class );
+        } catch (Exception e) {
+            //e.printStackTrace();
+        }
+
+        if( bnOK )
+        {
+            Log.d( TAG, "Open DB " + strDB );
+            Intent intent = new Intent(this, SearchActivity.class );
             startActivity(intent);
         }
         else
@@ -113,49 +139,56 @@ public class MainActivity extends AppCompatActivity {
 
     void pickDbPath()
     {
-        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType( "*/*");
-        startActivityForResult(intent, READ_REQUEST_CODE);
+        InputDialogFragment alertFragment = new InputDialogFragment();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        alertFragment.show(fragmentManager, "alert");
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
+    public static class InputDialogFragment extends DialogFragment implements DialogInterface.OnClickListener {
+        @NonNull
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            LayoutInflater inflater = getActivity().getLayoutInflater();
+            View v = inflater.inflate(R.layout.input_name_dialog, null);
+            final EditText etDbName = (EditText) v.findViewById( R.id.etDbName );
 
-        // The ACTION_OPEN_DOCUMENT intent was sent with the request code
-        // READ_REQUEST_CODE. If the request code seen here doesn't match, it's the
-        // response to some other intent, and the code below shouldn't run at all.
+            // Inflate and set the layout for the dialog
+            // Pass null as the parent view because its going in the dialog layout
+            builder.setView( v )
+                    // Add action buttons
+                    .setTitle( R.string.select_db )
+                    .setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int id) {
+                            MainActivity activity = (MainActivity) getActivity();
+                            String strDB = Environment.getExternalStorageDirectory() + File.separator + etDbName.getText();
+                            if( !strDB.endsWith(".sqlite3") )
+                                strDB += ".sqlite3";
+                            activity.tvDbName.setText( strDB );
+                        }
+                    })
+                    .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            InputDialogFragment.this.getDialog().cancel();
+                        }
+                    });
+            return builder.create();
+        }
 
-        if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            // The document selected by the user won't be returned in the intent.
-            // Instead, a URI to that document will be contained in the return intent
-            // provided to this method as a parameter.
-            // Pull that URI using resultData.getData().
-            Uri uri = null;
-            if (resultData != null) {
-                uri = resultData.getData();
-                Log.i(TAG, "Uri: " + uri.toString());
-                // File.separator + "ProductMemo.sqlite3"
-                tvDbName.setText( uri.toString() );
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            switch (which) {
+                case DialogInterface.BUTTON_POSITIVE:
+                    getActivity().finish();
+                    break;
+                case DialogInterface.BUTTON_NEGATIVE:
+                    dialog.cancel();
+                    break;
+                default:
+                    break;
             }
         }
-    }
-
-
-    boolean isDbOK( String strDB )
-    {
-        SQLiteDatabase db;
-
-        try {
-            db = SQLiteDatabase.openDatabase( strDB, null, SQLiteDatabase.OPEN_READONLY);
-            if (db == null)
-                return false;
-            db.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
     }
 
 }

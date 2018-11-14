@@ -34,7 +34,7 @@
     <string name="confirm">OK</string>
     <string name="search">Search</string>
 
-    <string name="select_db">Please select a DB path</string>
+    <string name="select_db">Please select a DB name</string>
     <string name="open_db">Open DB</string>
 
     <string name="product_barcode">Bar code</string>
